@@ -88,11 +88,23 @@ public class ProductService {
     public void delete(Long id) {
         Product product = getById(id);
 
-        // Delete image from Cloudinary when product is deleted
-        if (product.getImageUrl() != null) {
-            cloudinaryService.deleteImage(product.getImageUrl());
+        // Soft delete — set deletedAt timestamp instead of removing the row.
+        // This preserves the product record so order history remains intact.
+        // The Cloudinary image is kept since the product may be restored.
+        // @SQLDelete on the entity translates deleteById() into an UPDATE.
+        productRepository.deleteById(id);
+    }
+
+    // Restore a soft-deleted product (admin use)
+    public Product restore(Long id) {
+        Product product = productRepository.findByIdIncludingDeleted(id)
+                .orElseThrow(() -> new RuntimeException("Product not found: " + id));
+
+        if (product.getDeletedAt() == null) {
+            throw new RuntimeException("Product is not deleted");
         }
 
-        productRepository.deleteById(id);
+        product.setDeletedAt(null);
+        return productRepository.save(product);
     }
 }

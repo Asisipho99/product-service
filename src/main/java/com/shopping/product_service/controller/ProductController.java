@@ -66,10 +66,16 @@ public class ProductController {
         return ResponseEntity.ok(productService.update(id, request, image));
     }
 
-    // DELETE /api/products/{id}
+    // DELETE /api/products/{id} — soft delete
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         productService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    // PUT /api/products/{id}/restore — restore a soft-deleted product (admin)
+    @PutMapping("/{id}/restore")
+    public ResponseEntity<Product> restore(@PathVariable Long id) {
+        return ResponseEntity.ok(productService.restore(id));
     }
 }
