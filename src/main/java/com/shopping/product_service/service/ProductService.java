@@ -1,9 +1,13 @@
 package com.shopping.product_service.service;
 
+import com.shopping.product_service.dto.PageResponse;
 import com.shopping.product_service.dto.ProductRequest;
 import com.shopping.product_service.entity.Product;
 import com.shopping.product_service.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,6 +22,19 @@ public class ProductService {
 
     public List<Product> getAll() {
         return productRepository.findAll();
+    }
+
+    public PageResponse<Product> getAll(int page, int size) {
+        Page<Product> result = productRepository.findAll(
+                PageRequest.of(page, size, Sort.by("createdAt").descending()));
+        return new PageResponse<>(
+                result.getContent(),
+                result.getNumber(),
+                result.getSize(),
+                result.getTotalElements(),
+                result.getTotalPages(),
+                result.isLast()
+        );
     }
 
     public Product getById(Long id) {

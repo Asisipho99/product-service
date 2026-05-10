@@ -1,5 +1,6 @@
 package com.shopping.product_service.controller;
 
+import com.shopping.product_service.dto.PageResponse;
 import com.shopping.product_service.dto.ProductRequest;
 import com.shopping.product_service.entity.Product;
 import com.shopping.product_service.service.ProductService;
@@ -20,13 +21,15 @@ public class ProductController {
 
     private final ProductService productService;
 
-    // GET /api/products
+    // GET /api/products?page=0&size=20
     // GET /api/products?name=phone
     // GET /api/products?category=electronics
     @GetMapping
-    public ResponseEntity<List<Product>> getAll(
+    public ResponseEntity<?> getAll(
             @RequestParam(required = false) String name,
-            @RequestParam(required = false) String category) {
+            @RequestParam(required = false) String category,
+            @RequestParam(defaultValue = "0")  int page,
+            @RequestParam(defaultValue = "20") int size) {
 
         if (name != null) {
             return ResponseEntity.ok(productService.searchByName(name));
@@ -34,7 +37,7 @@ public class ProductController {
         if (category != null) {
             return ResponseEntity.ok(productService.getByCategory(category));
         }
-        return ResponseEntity.ok(productService.getAll());
+        return ResponseEntity.ok(productService.getAll(page, size));
     }
 
     // GET /api/products/{id}

@@ -1,10 +1,15 @@
 package com.shopping.product_service.repository;
 
 import com.shopping.product_service.entity.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
+
+    // Paginated full listing
+    Page<Product> findAll(Pageable pageable);
 
     // Search by name (case-insensitive)
     List<Product> findByNameContainingIgnoreCase(String name);
