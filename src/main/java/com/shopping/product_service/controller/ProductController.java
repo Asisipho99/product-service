@@ -40,6 +40,14 @@ public class ProductController {
         return ResponseEntity.ok(productService.getAll(page, size));
     }
 
+    // GET /api/products/categories — distinct categories of active products.
+    // Declared above GET /{id}: Spring MVC prefers the literal pattern over the template,
+    // so "categories" is never parsed as an id.
+    @GetMapping("/categories")
+    public ResponseEntity<List<String>> getCategories() {
+        return ResponseEntity.ok(productService.getCategories());
+    }
+
     // GET /api/products/{id}
     @GetMapping("/{id}")
     public ResponseEntity<Product> getById(@PathVariable Long id) {
