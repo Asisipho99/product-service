@@ -50,6 +50,11 @@ public class ProductService {
         return productRepository.findByCategory(category);
     }
 
+    // Distinct categories of active products — used by the customer interest picker
+    public List<String> getCategories() {
+        return productRepository.findDistinctCategories();
+    }
+
     public Product create(ProductRequest request, MultipartFile image) {
         Product product = new Product();
         product.setName(request.getName());
